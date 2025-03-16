@@ -33,8 +33,12 @@ def predict_emotion(face, model):
     labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
     return labels[np.argmax(predictions)]
 
-# ตั้งค่า pygame mixer ให้เหมาะกับเสียงพูด
-pygame.mixer.init(frequency=16000, size=-16, channels=1, buffer=2048)
+try:
+    pygame.mixer.init(frequency=16000, size=-16, channels=1, buffer=2048)
+except pygame.error as e:
+    st.error(f"ไม่สามารถตั้งค่า pygame.mixer ได้: {e}")
+    pygame.mixer.init()
+
 is_speaking = False  
 
 # ฟังก์ชันพูด
