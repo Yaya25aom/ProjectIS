@@ -6,9 +6,10 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import Layer
 import tempfile
 from gtts import gTTS
-import pygame
 import time
 import os
+import io
+import requests
 
 # คลาส Custom Layer
 class CastLayer(Layer):
@@ -33,38 +34,14 @@ def predict_emotion(face, model):
     labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
     return labels[np.argmax(predictions)]
 
-# ตั้งค่า pygame mixer สำหรับเสียงพูด
-pygame.mixer.init()
-
-is_speaking = False  
-
 # ฟังก์ชันพูด
 def speak(text):
-    global is_speaking
-
-    if is_speaking:
-        return
+    tts = gTTS(text=text, lang="th")
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+    tts.save(temp_file.name)
     
-    is_speaking = True  
-
-    def play_audio():
-        global is_speaking
-        tts = gTTS(text=text, lang="th")
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
-        tts.save(temp_file.name)
-        
-        pygame.mixer.music.load(temp_file.name)
-        pygame.mixer.music.play()
-
-        while pygame.mixer.music.get_busy():
-            time.sleep(0.1)
-        
-        pygame.mixer.music.stop()
-        is_speaking = False
-        temp_file.close()
-
-    threading.Thread(target=play_audio, daemon=True).start()
-
+    # สร้าง URL ที่สามารถใช้เล่นเสียงผ่าน web browser
+    st.audio(temp_file.name)
 
 # โหลดโมเดล
 model = load_emotion_model()
@@ -113,9 +90,8 @@ def show():
                 emotion = predict_emotion(face, model)
 
                 if emotion != last_emotion:
-                    if not is_speaking:
-                        speak(emotion_speech.get(emotion, ""))
-                        last_emotion = emotion  
+                    speak(emotion_speech.get(emotion, ""))
+                    last_emotion = emotion  
 
                 cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
                 cv2.putText(frame, emotion, (x + 5, y + h + 25), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
