@@ -62,7 +62,7 @@ def show():
     }
 
     if run:
-        cap = cv2.VideoCapture(1)
+        cap = cv2.VideoCapture(0)
         stframe = st.empty()
         stop_button = st.button("🔴 ปิดกล้อง")
 
