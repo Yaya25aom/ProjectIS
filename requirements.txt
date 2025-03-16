@@ -2,7 +2,7 @@ streamlit
 opencv-python-headless
 numpy
 tensorflow
-pyttsx3
+pygame
 gtts
 pandas
 scikit-learn
