@@ -33,6 +33,7 @@ def predict_emotion(face, model):
     labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
     return labels[np.argmax(predictions)]
 
+# ตั้งค่า pygame mixer ให้เหมาะกับเสียงพูด
 try:
     pygame.mixer.init(frequency=16000, size=-16, channels=1, buffer=2048)
 except pygame.error as e:
@@ -127,4 +128,4 @@ def show():
         
         cap.release()
     else:
-        st.warning("📌 กดเปิดกล้องเพื่อเริ่มต้น") 
+        st.warning("📌 กดเปิดกล้องเพื่อเริ่มต้น")
