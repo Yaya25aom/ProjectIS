@@ -18,7 +18,7 @@ class CastLayer(Layer):
 # โหลดโมเดล
 @st.cache_resource
 def load_emotion_model():
-    model_path = "/Users/cococo/ProjectIS/model_emotion.h5"
+    model_path = "model_emotion.h5"
     return load_model(model_path, custom_objects={"Cast": CastLayer}, compile=False)
 
 # ฟังก์ชันทำนายอารมณ์

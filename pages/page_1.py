@@ -7,7 +7,7 @@ from io import BytesIO
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("/Users/cococo/ProjectIS/risk_Cervical_random_risk_balanced.csv")  # แทนที่ด้วยชื่อไฟล์ของคุณ
+    df = pd.read_csv("risk_Cervical_random_risk_balanced.csv")  # แทนที่ด้วยชื่อไฟล์ของคุณ
     return df
 
 # โหลดข้อมูล
