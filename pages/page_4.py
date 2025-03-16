@@ -5,8 +5,8 @@ import threading
 from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import Layer
 import tempfile
-import pyttsx3  # ใช้ pyttsx3 แทน pygame
 from gtts import gTTS
+import pygame
 import time
 import os
 
@@ -33,10 +33,8 @@ def predict_emotion(face, model):
     labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
     return labels[np.argmax(predictions)]
 
-# ตั้งค่า pyttsx3 สำหรับการพูด
-engine = pyttsx3.init()
-engine.setProperty('rate', 150)  # ปรับความเร็วของเสียง
-engine.setProperty('volume', 1)  # ปรับระดับเสียง (0.0 ถึง 1.0)
+# ตั้งค่า pygame mixer สำหรับเสียงพูด
+pygame.mixer.init()
 
 is_speaking = False  
 
@@ -51,9 +49,19 @@ def speak(text):
 
     def play_audio():
         global is_speaking
-        engine.say(text)
-        engine.runAndWait()
+        tts = gTTS(text=text, lang="th")
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+        tts.save(temp_file.name)
+        
+        pygame.mixer.music.load(temp_file.name)
+        pygame.mixer.music.play()
+
+        while pygame.mixer.music.get_busy():
+            time.sleep(0.1)
+        
+        pygame.mixer.music.stop()
         is_speaking = False
+        temp_file.close()
 
     threading.Thread(target=play_audio, daemon=True).start()
 
